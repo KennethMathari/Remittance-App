@@ -1,7 +1,6 @@
 package org.tawakal.composemphelloworld
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
@@ -23,14 +22,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
                 mainActivityViewModel.mainActivityState.collect { mainActivityState ->
-                    mainActivityState.azureAccessToken?.let { accessToken ->
+                    mainActivityState.azureAccessToken?.let { azureAccessToken ->
                         dataStoreManager.saveData(
-                            DATASTORE_PREF_AZURE_ACCESSTOKEN_KEY, accessToken
+                            DATASTORE_PREF_AZURE_ACCESSTOKEN_KEY, azureAccessToken
                         )
-
-                        Log.e("AccessTokenAZure", accessToken)
                     }
+                }
             }
         }
 
