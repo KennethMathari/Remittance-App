@@ -1,0 +1,71 @@
+pool:
+ # name: macOSSelfHosted
+  vmImage: 'macos-latest'
+  demands: java
+
+variables:
+  CACHE_RESTORED: 'false'
+  
+
+steps:
+
+- task: SonarCloudPrepare@2
+  inputs:
+    SonarCloud: 'kmp_sonar'
+    organization: 'tawakalexpress'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'TawakalExpress_Tawakal-KMP'
+    cliProjectName: 'Tawakal KMP'
+    cliSources: '.'
+    extraProperties: |
+      sonar.projectKey=TawakalExpress_Tawakal-KMP
+      sonar.organization=tawakalexpress
+      
+      # This is the name and version displayed in the SonarCloud UI.
+      #sonar.projectName=Tawakal KMP
+      #sonar.projectVersion=1.0
+      
+      
+      # Path is relative to the sonar-project.properties file. Replace "\" by "/" on Windows.
+      sonar.sources=.
+      sonar.exclusions=iosApp/**
+      
+      # Encoding of the source code. Default is default system encoding
+      #sonar.sourceEncoding=UTF-8
+- task: Gradle@2
+  inputs:
+    workingDirectory: '.'
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'clean build --stacktrace'
+- task: Gradle@2
+  inputs:
+    workingDirectory: '.'
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'test  --stacktrace'
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+- task: SonarCloudAnalyze@2
+  inputs:
+    jdkversion: 'JAVA_HOME_17_X64'
+- task: SonarCloudPublish@2
+  inputs:
+    pollingTimeoutSec: '300'

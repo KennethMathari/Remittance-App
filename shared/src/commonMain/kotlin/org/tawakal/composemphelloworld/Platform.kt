@@ -1,0 +1,7 @@
+package org.tawakal.composemphelloworld
+
+interface  Platform {
+    val name: String
+}
+
+expect fun getPlatform(): Platform
