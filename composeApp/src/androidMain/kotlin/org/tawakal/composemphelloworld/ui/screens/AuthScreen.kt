@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,12 +54,12 @@ fun AuthScreen(
             )
             .fillMaxSize()
     ) {
-        androidx.compose.material3.Button(onClick = {
+        Button(onClick = {
             scope.launch {
                 androidAuthenticationManager.fetchSecretClientId(activity)
             }
         }) {
-            androidx.compose.material3.Text(text = "Sign In")
+            Text(text = "Sign In")
         }
     }
 

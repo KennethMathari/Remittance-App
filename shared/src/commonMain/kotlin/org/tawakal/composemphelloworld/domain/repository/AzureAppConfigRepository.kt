@@ -8,7 +8,7 @@ import org.tawakal.composemphelloworld.domain.NetworkResult
 
 interface AzureAppConfigRepository {
 
-    suspend fun fetchAzureAppConfigAccessToken(): AzureAppConfigTokenResponseDTO?
+    suspend fun fetchAzureAppConfigAccessToken(): NetworkResult<AzureAppConfigTokenResponseDTO?>
 
     suspend fun fetchAzureAppConfigSecretValue(
         key: String, accessToken: String

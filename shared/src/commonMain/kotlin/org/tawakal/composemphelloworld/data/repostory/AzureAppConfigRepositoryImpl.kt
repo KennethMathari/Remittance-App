@@ -43,7 +43,7 @@ class AzureAppConfigRepositoryImpl(
     private val hmac: Hmac
 ) : AzureAppConfigRepository {
 
-    override suspend fun fetchAzureAppConfigAccessToken(): AzureAppConfigTokenResponseDTO? {
+    override suspend fun fetchAzureAppConfigAccessToken(): NetworkResult<AzureAppConfigTokenResponseDTO?> {
         return withContext(ioDispatcher) {
             try {
 
@@ -57,7 +57,7 @@ class AzureAppConfigRepositoryImpl(
                 }
 
                 if (!response.status.isSuccess()) {
-                    return@withContext null
+                    return@withContext NetworkResult.NetworkError(response.status.description)
                 }
 
                 val azureAppConfigTokenResponseDTO =
@@ -67,10 +67,10 @@ class AzureAppConfigRepositoryImpl(
                     println("Parsed data is null")
                 }
 
-                azureAppConfigTokenResponseDTO
+                NetworkResult.Success(azureAppConfigTokenResponseDTO)
             } catch (e: Exception) {
                 e.printStackTrace()
-                null
+                NetworkResult.ClientError(e.message.toString())
             }
         }
     }

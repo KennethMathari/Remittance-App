@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.tawakal.composemphelloworld.domain.NetworkResult
 import org.tawakal.composemphelloworld.domain.repository.AzureAppConfigRepository
 import org.tawakal.composemphelloworld.state.MainActivityState
 
@@ -22,19 +23,33 @@ class MainActivityViewModel(
     private fun fetchAzureAppConfigAccessToken() {
         viewModelScope.launch {
 
-            val azureAppConfigTokenResponseDTO =
+            val result =
                 azureAppConfigRepository.fetchAzureAppConfigAccessToken()
-            if (azureAppConfigTokenResponseDTO != null) {
 
-                val accessToken = azureAppConfigTokenResponseDTO.accessToken
-                _mainActivityState.value = MainActivityState(
-                    accessToken = accessToken
-                )
-                println("Azure App Config Access Token: ${azureAppConfigTokenResponseDTO.accessToken}")
-
-            } else {
-                println("Failed to fetch access token from Azure App Config")
+            when(result){
+                is NetworkResult.ClientError -> {
+                    updateErrorMessage("Unable to Fetch Azure Token! Please Open the App Again")
+                }
+                is NetworkResult.NetworkError -> {
+                    updateErrorMessage("Unable to Fetch Azure Token! Check Internet Connection")
+                }
+                is NetworkResult.ServerError -> {
+                    updateErrorMessage("Oops! Our Server is Down.")
+                }
+                is NetworkResult.Success -> {
+                    _mainActivityState.value = MainActivityState(
+                        azureAccessToken = result.data?.accessToken,
+                        errorMessage = null
+                    )
+                }
             }
         }
+    }
+
+    private fun updateErrorMessage(errorMessage: String) {
+        _mainActivityState.value = MainActivityState(
+            azureAccessToken = null,
+            errorMessage = errorMessage
+        )
     }
 }

@@ -23,16 +23,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainActivityViewModel.mainActivityState.collect { mainActivityState ->
-                    mainActivityState.accessToken?.let { accessToken ->
+                    mainActivityState.azureAccessToken?.let { accessToken ->
                         dataStoreManager.saveData(
                             DATASTORE_PREF_AZURE_ACCESSTOKEN_KEY, accessToken
                         )
 
                         Log.e("AccessTokenAZure", accessToken)
                     }
-                }
             }
         }
 
