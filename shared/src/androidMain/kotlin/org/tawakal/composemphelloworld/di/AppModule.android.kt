@@ -9,9 +9,11 @@ import org.koin.dsl.module
 import org.tawakal.composemphelloworld.msal.AndroidAuthenticationManager
 import org.tawakal.composemphelloworld.msal.AuthenticationManager
 import org.tawakal.composemphelloworld.utils.AndroidCurrencyManager
+import org.tawakal.composemphelloworld.utils.AndroidEncryptionManager
 import org.tawakal.composemphelloworld.utils.AndroidHmac
 import org.tawakal.composemphelloworld.utils.Constants.DATASTORE_PREF_FILENAME
 import org.tawakal.composemphelloworld.utils.CurrencyManager
+import org.tawakal.composemphelloworld.utils.EncryptionManager
 import org.tawakal.composemphelloworld.utils.Hmac
 
 
@@ -42,6 +44,10 @@ actual val appModule = module {
             scope = get(),
             currencyManager = get()
         )
+    }
+
+    single<EncryptionManager> {
+        AndroidEncryptionManager()
     }
 
 }

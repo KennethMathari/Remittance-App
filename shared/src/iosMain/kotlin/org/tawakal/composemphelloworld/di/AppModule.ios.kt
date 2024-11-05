@@ -10,8 +10,10 @@ import org.tawakal.composemphelloworld.IosAuthenticationManager
 import org.tawakal.composemphelloworld.msal.AuthenticationManager
 import org.tawakal.composemphelloworld.utils.Constants.DATASTORE_PREF_FILENAME
 import org.tawakal.composemphelloworld.utils.CurrencyManager
+import org.tawakal.composemphelloworld.utils.EncryptionManager
 import org.tawakal.composemphelloworld.utils.Hmac
 import org.tawakal.composemphelloworld.utils.IosCurrencyManager
+import org.tawakal.composemphelloworld.utils.IosEncryptionManager
 import org.tawakal.composemphelloworld.utils.IosHmac
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -52,6 +54,10 @@ actual val appModule = module {
                 filePath.toPath()
             }
         )
+    }
+
+    single<EncryptionManager> {
+        IosEncryptionManager()
     }
 
 }
