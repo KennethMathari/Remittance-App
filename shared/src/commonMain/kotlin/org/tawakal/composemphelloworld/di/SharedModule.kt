@@ -31,7 +31,8 @@ val sharedModule = module {
 
     single<DataStoreManager> {
         DataStoreManager(
-            dataStore = get()
+            dataStore = get(),
+            encryptionManager = get()
         )
     }
 

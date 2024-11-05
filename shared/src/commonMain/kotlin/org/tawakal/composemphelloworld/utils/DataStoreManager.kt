@@ -15,6 +15,9 @@ class DataStoreManager(
         dataStore.edit { mutablePreferences ->
             mutablePreferences[byteArrayPreferencesKey(key)] = encryptedData
         }
+
+        println("ENCRYPTED DATA: $encryptedData" )
+
     }
 
     suspend fun getData(key: String): String {
@@ -24,6 +27,8 @@ class DataStoreManager(
         }.first()
 
         val decryptedData = encryptedData?.let { encryptionManager.decryptData(it) }
+
+        println("DECRYPTED DATA: $decryptedData" )
 
         return decryptedData ?: ""
     }
